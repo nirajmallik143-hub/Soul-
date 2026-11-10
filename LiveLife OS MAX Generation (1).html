@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LiveLife OS // MAX Generation</title>
+    <!-- Chosen Palette: Quantum Lumina (Light Slate Background #f8fafc with Translucent Glass Panels, Indigo, Electric Cyan, and Warm Amber Accents) -->
+    <!-- Application Structure Plan: The application is designed as an interactive quantum life management platform. 1. System Header with live QKD security indicators & coherence status. 2. Superposition Parameters Console: Sliders for energy, cognitive load, time budget, and target priorities. 3. Interactive Quantum Engine Visualizer: Custom HTML5 Canvas rendering particle-wave superposition and interactive wave collapse. 4. Collapsed Eigenstate Dashboard: Live KPI cards (Efficiency, Longevity, Joy Index, Saved Time), dynamic Chart.js Radar & Line charts comparing superposition states vs optimal collapsed reality, and an interactive Schrödinger's Dynamic Schedule that adapts to user input. 5. Quantum Key Distribution (QKD) Vault Monitor with continuous photon phase monitoring. -->
+    <!-- Visualization & Content Choices: 
+    - Quantum Wave Superposition: Canvas API rendering dynamic sine waves and particle fields with collapse animation. (No SVG)
+    - Optimization Radar Chart: Chart.js Radar visualization comparing baseline raw potential against collapsed eigenstate across 6 life dimensions.
+    - 24-Hour Energy & Probability Curve: Chart.js dynamic Line Chart mapping energy levels and calculated productivity waves.
+    - Dynamic Schedule & Vault: HTML5 Tailwind-styled reactive elements powered by Vanilla JS logic.
+    - All graphics use Canvas, CSS, or Unicode glyphs (⚛, ⚡, 🛡️, 📈, 🔒, ↻). NO SVG or Mermaid JS used. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 380px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 340px;
+            }
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 10px 25px -5px rgba(14, 165, 233, 0.05), 0 8px 10px -6px rgba(99, 102, 241, 0.05);
+        }
+        .quantum-pulse {
+            animation: pulse-glow 2s infinite ease-in-out;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 15px rgba(6, 182, 212, 0.3); }
+            50% { box-shadow: 0 0 25px rgba(99, 102, 241, 0.5); }
+        }
+        @keyframes strobe-red {
+            0%, 100% { background-color: rgba(153, 27, 27, 0.1); box-shadow: inset 0 0 50px rgba(220, 38, 38, 0.2); }
+            50% { background-color: rgba(153, 27, 27, 0.4); box-shadow: inset 0 0 100px rgba(220, 38, 38, 0.6); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+    <header class="sticky top-0 z-50 bg-slate-900 text-white shadow-xl border-b border-indigo-950">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <span class="text-2xl text-cyan-400 font-bold tracking-wider">⚛ LiveLife OS</span>
+                <span class="bg-indigo-900/80 text-cyan-300 text-xs px-2.5 py-1 rounded-full border border-cyan-500/30 font-mono">MAX GEN v4.0</span>
+            </div>
+            <div class="flex items-center space-x-6 text-xs sm:text-sm">
+                <div class="hidden sm:flex items-center space-x-2">
+                    <span class="inline-block w-2 py-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span class="text-slate-300">QKD Coherence: <strong class="text-emerald-400 font-mono">99.98%</strong></span>
+                </div>
+                <div class="flex items-center space-x-2 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
+                    <span class="text-cyan-400">🛡️ Vault:</span>
+                    <span id="vaultStatus" class="font-mono text-cyan-300 font-semibold">LATTICE-ENCRYPTED</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+        <section class="glass-panel rounded-2xl p-6 sm:p-8">
+            <div class="max-w-3xl">
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                    Quantum Life Superposition Engine
+                </h1>
+                <p class="mt-2 text-slate-600 text-sm sm:text-base leading-relaxed">
+                    LiveLife OS applies quantum wave function superposition to evaluate thousands of potential daily schedules, decision branching points, and biological energy states simultaneously. Adjust your parameters below and trigger the wave function collapse into your optimal reality.
+                </p>
+            </div>
+
+            <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white/90 p-4 rounded-xl border border-slate-200">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="text-xs font-bold text-slate-700 uppercase tracking-wider">Biological Energy</label>
+                        <span id="valEnergy" class="text-xs font-mono font-bold text-indigo-600">75%</span>
+                    </div>
+                    <input type="range" id="inputEnergy" min="20" max="100" value="75" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                    <p class="text-[11px] text-slate-500 mt-2">Circadian sleep density & cellular hydration level.</p>
+                </div>
+
+                <div class="bg-white/90 p-4 rounded-xl border border-slate-200">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="text-xs font-bold text-slate-700 uppercase tracking-wider">Cognitive Capacity</label>
+                        <span id="valFocus" class="text-xs font-mono font-bold text-cyan-600">80%</span>
+                    </div>
+                    <input type="range" id="inputFocus" min="20" max="100" value="80" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-cyan-600">
+                    <p class="text-[11px] text-slate-500 mt-2">Mental clarity, focus bandwidth, and stress resilience.</p>
+                </div>
+
+                <div class="bg-white/90 p-4 rounded-xl border border-slate-200">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="text-xs font-bold text-slate-700 uppercase tracking-wider">Time Budget (Hrs)</label>
+                        <span id="valTime" class="text-xs font-mono font-bold text-emerald-600">14.0 hrs</span>
+                    </div>
+                    <input type="range" id="inputTime" min="6" max="18" step="0.5" value="14" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600">
+                    <p class="text-[11px] text-slate-500 mt-2">Allocated waking hours for active optimization.</p>
+                </div>
+
+                <div class="bg-white/90 p-4 rounded-xl border border-slate-200">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="text-xs font-bold text-slate-700 uppercase tracking-wider">Optimization Target</label>
+                        <span id="valPriority" class="text-xs font-mono font-bold text-amber-600">BALANCED</span>
+                    </div>
+                    <select id="inputPriority" class="w-full text-xs font-semibold p-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-800 focus:ring-2 focus:ring-indigo-500">
+                        <option value="balanced">Balanced Eigenstate</option>
+                        <option value="longevity">Maximum Longevity & Health</option>
+                        <option value="efficiency">Peak Productivity & Financials</option>
+                        <option value="joy">Maximum Serotonin & Well-being</option>
+                    </select>
+                    <p class="text-[11px] text-slate-500 mt-2">Primary metric to maximize during collapse.</p>
+                </div>
+            </div>
+
+            <div class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-200/80 pt-6">
+                <div class="flex items-center space-x-3 text-xs text-slate-600">
+                    <span class="inline-block w-3 h-3 rounded-full bg-cyan-500 animate-pulse"></span>
+                    <span>Superposition States calculated: <strong id="stateCount" class="font-mono text-slate-900">1,048,576</strong> possibilities</span>
+                </div>
+                <button id="btnCollapse" class="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-indigo-600 via-cyan-600 to-indigo-700 hover:from-indigo-700 hover:to-cyan-700 text-white font-bold rounded-xl shadow-lg hover:shadow-cyan-500/25 transition-all transform active:scale-95 text-sm tracking-wide flex items-center justify-center space-x-2">
+                    <span>⚡ COLLAPSE QUANTUM WAVEFUNCTION</span>
+                </button>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-1 glass-panel rounded-2xl p-6 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-bold text-slate-900">Quantum Wave Visualizer</h2>
+                        <span id="simState" class="text-xs font-mono px-2 py-0.5 rounded bg-cyan-100 text-cyan-800 font-semibold">SUPERPOSITION</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mb-4">
+                        Visualizing active probability amplitudes. Triggering a collapse reduces wave entropy to a single eigenstate solution.
+                    </p>
+                </div>
+
+                <div class="w-full bg-slate-950 rounded-xl overflow-hidden border border-slate-800 p-2 my-2 relative">
+                    <canvas id="quantumCanvas" class="w-full h-48 block"></canvas>
+                    <div id="canvasOverlay" class="absolute inset-0 flex items-center justify-center bg-slate-950/60 opacity-0 pointer-events-none transition-opacity duration-300">
+                        <div class="text-center">
+                            <span class="inline-block text-2xl animate-spin text-cyan-400">⚛</span>
+                            <div class="text-xs text-cyan-300 font-mono mt-2">Measuring Probability Vectors...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-4 border-t border-slate-200 grid grid-cols-2 gap-2 text-center text-xs">
+                    <div class="bg-slate-100 p-2 rounded-lg">
+                        <div class="text-slate-400 text-[10px] uppercase">Entropy Index</div>
+                        <div id="entropyVal" class="font-mono font-bold text-slate-700">0.042 S/kB</div>
+                    </div>
+                    <div class="bg-slate-100 p-2 rounded-lg">
+                        <div class="text-slate-400 text-[10px] uppercase">Decoherence Rate</div>
+                        <div id="decoherenceVal" class="font-mono font-bold text-slate-700">0.001 ms</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2 space-y-6">
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <div class="glass-panel p-4 rounded-xl border-l-4 border-indigo-500">
+                        <div class="text-xs font-medium text-slate-500">Efficiency Boost</div>
+                        <div id="kpiEfficiency" class="text-2xl font-black text-slate-900 mt-1 font-mono">+34.2%</div>
+                        <div class="text-[10px] text-indigo-600 mt-1 font-medium">vs Linear Schedule</div>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl border-l-4 border-emerald-500">
+                        <div class="text-xs font-medium text-slate-500">Longevity Rating</div>
+                        <div id="kpiLongevity" class="text-2xl font-black text-slate-900 mt-1 font-mono">96.8</div>
+                        <div class="text-[10px] text-emerald-600 mt-1 font-medium">Optimal Cellular Rest</div>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl border-l-4 border-amber-500">
+                        <div class="text-xs font-medium text-slate-500">Joy & Well-being</div>
+                        <div id="kpiJoy" class="text-2xl font-black text-slate-900 mt-1 font-mono">92/100</div>
+                        <div class="text-[10px] text-amber-600 mt-1 font-medium">Cortisol Suppressed</div>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl border-l-4 border-cyan-500">
+                        <div class="text-xs font-medium text-slate-500">Time Recaptured</div>
+                        <div id="kpiTimeSaved" class="text-2xl font-black text-slate-900 mt-1 font-mono">2.4 hrs</div>
+                        <div class="text-[10px] text-cyan-600 mt-1 font-medium">Friction Eliminated</div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="glass-panel p-5 rounded-2xl">
+                        <h3 class="text-sm font-bold text-slate-900 mb-1">State Vector Balance</h3>
+                        <p class="text-xs text-slate-500 mb-4">Superposition (outer) vs Collapsed Eigenstate (inner)</p>
+                        <div class="chart-container">
+                            <canvas id="radarChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-5 rounded-2xl">
+                        <h3 class="text-sm font-bold text-slate-900 mb-1">24-Hour Predictive Waves</h3>
+                        <p class="text-xs text-slate-500 mb-4">Calculated cognitive energy & focus timeline</p>
+                        <div class="chart-container">
+                            <canvas id="lineChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 glass-panel rounded-2xl p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-900">Schrödinger's Dynamic Schedule</h2>
+                        <p class="text-xs text-slate-500">Collapsed real-time agenda. Re-evaluates continuously based on biometric feedback.</p>
+                    </div>
+                    <span class="text-xs font-mono bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full font-semibold">AUTO-SYNC ACTIVE</span>
+                </div>
+
+                <div id="scheduleTimeline" class="space-y-3 mt-6">
+                    
+                </div>
+            </div>
+
+            <div class="glass-panel rounded-2xl p-6 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-bold text-slate-900">Quantum Vault Security</h2>
+                        <span class="text-xs font-mono bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-semibold">QKD ACTIVE</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mb-4">
+                        Personal life metrics are locked behind entangled photon pairs. Any unauthorized observation immediately destroys the encryption key.
+                    </p>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="bg-slate-900 text-slate-200 p-4 rounded-xl font-mono text-xs space-y-2 border border-slate-800">
+                        <div class="flex justify-between border-b border-slate-800 pb-2">
+                            <span class="text-slate-400">Photon Phase Lock:</span>
+                            <span class="text-cyan-400">ENTANGLED</span>
+                        </div>
+                        <div class="flex justify-between border-b border-slate-800 pb-2">
+                            <span class="text-slate-400">Eavesdrop Shield:</span>
+                            <span class="text-emerald-400">0 INTERRUPTIONS</span>
+                        </div>
+                        <div class="flex justify-between border-b border-slate-800 pb-2">
+                            <span class="text-slate-400">Lattice Rotation:</span>
+                            <span id="latticeKey" class="text-amber-400">0x8F9A...C412</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Biometric Sync:</span>
+                            <span class="text-indigo-400">CORTISOL STABLE</span>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-indigo-50/70 border border-indigo-100 rounded-xl">
+                        <div class="flex items-center space-x-2 text-indigo-900 font-bold text-xs">
+                            <span>💎 Quantum Micro-Investment</span>
+                        </div>
+                        <p class="text-[11px] text-indigo-700 mt-1">
+                            Calculated micro-yield of <strong id="microYield" class="font-mono text-slate-900">$14.82/day</strong> automatically routed into yield liquidity based on your daily energy surplus.
+                        </p>
+                    </div>
+
+                    <button id="btnRotateKeys" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-cyan-400 font-mono text-xs rounded-xl border border-slate-700 transition flex items-center justify-center space-x-2">
+                        <span>↻ ROTATE QUANTUM KEYS</span>
+                    </button>
+
+                    <button id="btnTriggerEmergency" class="w-full py-2.5 bg-red-950/40 hover:bg-red-900/60 text-red-400 font-mono text-xs rounded-xl border border-red-900/50 transition flex items-center justify-center space-x-2 mt-3">
+                        <span>⚠️ SIMULATE EMERGENCY ANOMALY</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs space-y-2">
+            <p>LiveLife OS // MAX Generation — Powered by Quantum Probability & Post-Quantum Encryption</p>
+            <p class="text-slate-600">Zero-Knowledge Architecture • Photonic Hardware Interface Simulated</p>
+        </div>
+    </footer>
+
+    <!-- Emergency Override Modal -->
+    <div id="emergencyModal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-950/85 backdrop-blur-md"></div>
+        <div class="relative w-full max-w-lg border-2 border-red-600 rounded-2xl p-6 sm:p-8 overflow-hidden" style="animation: strobe-red 1.5s infinite ease-in-out;">
+            <div class="flex items-center space-x-4 mb-6">
+                <span class="text-5xl text-red-500 animate-pulse drop-shadow-[0_0_15px_rgba(239,68,68,0.8)]">⚠️</span>
+                <div>
+                    <h2 class="text-2xl font-black text-red-500 tracking-widest uppercase drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]">Emergency State</h2>
+                    <p class="text-red-300 text-xs font-mono mt-1 font-bold">CORTISOL SPIKE / METABOLIC CRASH DETECTED</p>
+                </div>
+            </div>
+            
+            <div class="space-y-4 bg-red-950/80 p-5 rounded-xl border border-red-800/80 text-red-200 font-mono text-xs relative z-10 shadow-inner">
+                <div class="flex justify-between border-b border-red-800/50 pb-2">
+                    <span class="text-red-400">System Response:</span>
+                    <span class="font-bold text-red-300 animate-pulse">ISOLATING VECTORS</span>
+                </div>
+                <div class="flex justify-between border-b border-red-800/50 pb-2">
+                    <span class="text-red-400">Schedule State:</span>
+                    <span class="font-bold text-red-300">SUSPENDED</span>
+                </div>
+                <div class="flex justify-between border-b border-red-800/50 pb-2">
+                    <span class="text-red-400">Biometric Override:</span>
+                    <span class="font-bold text-red-300">ENGAGED</span>
+                </div>
+                <p class="mt-4 text-[11px] leading-relaxed text-red-300/80">
+                    All non-essential tasks have been purged from the quantum timeline. Forced recovery protocol activated to prevent total systemic collapse.
+                </p>
+            </div>
+
+            <div class="mt-8 relative z-10">
+                <button id="btnResolveEmergency" class="w-full py-4 bg-red-700 hover:bg-red-600 text-white font-bold rounded-xl shadow-[0_0_20px_rgba(220,38,38,0.4)] hover:shadow-[0_0_30px_rgba(220,38,38,0.6)] transition-all active:scale-95 text-sm tracking-widest uppercase flex items-center justify-center space-x-2 border border-red-500">
+                    <span>INITIATE COUNTERMEASURES</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const state = {
+            energy: 75,
+            focus: 80,
+            time: 14,
+            priority: 'balanced',
+            collapsed: false
+        };
+
+        const inputEnergy = document.getElementById('inputEnergy');
+        const inputFocus = document.getElementById('inputFocus');
+        const inputTime = document.getElementById('inputTime');
+        const inputPriority = document.getElementById('inputPriority');
+        const btnCollapse = document.getElementById('btnCollapse');
+        const btnRotateKeys = document.getElementById('btnRotateKeys');
+        const btnTriggerEmergency = document.getElementById('btnTriggerEmergency');
+        const btnResolveEmergency = document.getElementById('btnResolveEmergency');
+        const emergencyModal = document.getElementById('emergencyModal');
+
+        const valEnergy = document.getElementById('valEnergy');
+        const valFocus = document.getElementById('valFocus');
+        const valTime = document.getElementById('valTime');
+        const valPriority = document.getElementById('valPriority');
+
+        inputEnergy.addEventListener('input', (e) => {
+            state.energy = parseInt(e.target.value);
+            valEnergy.textContent = state.energy + '%';
+            updateStateCount();
+        });
+
+        inputFocus.addEventListener('input', (e) => {
+            state.focus = parseInt(e.target.value);
+            valFocus.textContent = state.focus + '%';
+            updateStateCount();
+        });
+
+        inputTime.addEventListener('input', (e) => {
+            state.time = parseFloat(e.target.value);
+            valTime.textContent = state.time.toFixed(1) + ' hrs';
+            updateStateCount();
+        });
+
+        inputPriority.addEventListener('change', (e) => {
+            state.priority = e.target.value;
+            valPriority.textContent = e.target.value.toUpperCase();
+        });
+
+        function updateStateCount() {
+            const count = Math.floor(Math.pow(2, (state.energy + state.focus) / 8) * (state.time * 100));
+            document.getElementById('stateCount').textContent = count.toLocaleString();
+        }
+
+        const canvas = document.getElementById('quantumCanvas');
+        const ctx = canvas.getContext('2d');
+        let animationFrameId;
+        let wavePhase = 0;
+        let isCollapsedVisual = false;
+
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth - 16;
+            canvas.height = canvas.parentElement.clientHeight - 16;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function drawQuantumCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const width = canvas.width;
+            const height = canvas.height;
+            const centerY = height / 2;
+
+            if (!isCollapsedVisual) {
+                for (let j = 0; j < 5; j++) {
+                    ctx.beginPath();
+                    ctx.lineWidth = 1.5;
+                    ctx.strokeStyle = j % 2 === 0 ? 'rgba(6, 182, 212, 0.4)' : 'rgba(99, 102, 241, 0.4)';
+                    for (let x = 0; x < width; x++) {
+                        const freq = 0.015 + j * 0.005;
+                        const amp = (20 + j * 10) * (state.energy / 100);
+                        const y = centerY + Math.sin(x * freq + wavePhase + j) * amp + Math.cos(x * 0.005 - wavePhase) * 10;
+                        if (x === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.stroke();
+                }
+
+                for (let p = 0; p < 25; p++) {
+                    const px = (Math.sin(p * 99 + wavePhase * 0.5) * 0.5 + 0.5) * width;
+                    const py = (Math.cos(p * 33 + wavePhase * 0.8) * 0.5 + 0.5) * height;
+                    ctx.fillStyle = p % 2 === 0 ? 'rgba(56, 189, 248, 0.6)' : 'rgba(168, 85, 247, 0.6)';
+                    ctx.beginPath();
+                    ctx.arc(px, py, 2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            } else {
+                ctx.beginPath();
+                ctx.lineWidth = 3;
+                ctx.strokeStyle = '#06b6d4';
+                for (let x = 0; x < width; x++) {
+                    const y = centerY + Math.sin(x * 0.02 + wavePhase) * 35 * (state.focus / 100);
+                    if (x === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+
+                ctx.shadowBlur = 12;
+                ctx.shadowColor = '#06b6d4';
+                ctx.fillStyle = '#6366f1';
+                ctx.beginPath();
+                ctx.arc(width / 2, centerY + Math.sin(width / 2 * 0.02 + wavePhase) * 35 * (state.focus / 100), 6, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+
+            wavePhase += isCollapsedVisual ? 0.08 : 0.03;
+            animationFrameId = requestAnimationFrame(drawQuantumCanvas);
+        }
+        drawQuantumCanvas();
+
+        const radarCtx = document.getElementById('radarChart').getContext('2d');
+        const radarChart = new Chart(radarCtx, {
+            type: 'radar',
+            data: {
+                labels: ['Longevity', 'Productivity', 'Serotonin', 'Cognitive', 'Wealth Yield', 'Physical Recovery'],
+                datasets: [
+                    {
+                        label: 'Baseline Superposition',
+                        data: [60, 55, 65, 50, 60, 55],
+                        backgroundColor: 'rgba(99, 102, 241, 0.15)',
+                        borderColor: 'rgba(99, 102, 241, 0.5)',
+                        borderWidth: 1,
+                        pointBackgroundColor: 'rgba(99, 102, 241, 1)'
+                    },
+                    {
+                        label: 'Collapsed Eigenstate',
+                        data: [95, 90, 92, 88, 94, 96],
+                        backgroundColor: 'rgba(6, 182, 212, 0.25)',
+                        borderColor: '#06b6d4',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#06b6d4'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { color: 'rgba(226, 232, 240, 0.8)' },
+                        grid: { color: 'rgba(226, 232, 240, 0.8)' },
+                        suggestedMin: 0,
+                        suggestedMax: 100,
+                        ticks: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { boxWidth: 10, font: { size: 10 } }
+                    }
+                }
+            }
+        });
+
+        const lineCtx = document.getElementById('lineChart').getContext('2d');
+        const lineChart = new Chart(lineCtx, {
+            type: 'line',
+            data: {
+                labels: ['06:00', '09:00', '12:00', '15:00', '18:00', '21:00', '00:00'],
+                datasets: [
+                    {
+                        label: 'Conventional Linear Energy',
+                        data: [50, 80, 65, 40, 30, 20, 15],
+                        borderColor: '#94a3b8',
+                        borderDash: [4, 4],
+                        borderWidth: 1.5,
+                        fill: false,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Quantum Optimized Energy',
+                        data: [75, 95, 88, 92, 85, 70, 90],
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        min: 0,
+                        max: 100,
+                        grid: { color: 'rgba(241, 245, 249, 1)' },
+                        ticks: { font: { size: 10 } }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { size: 10 } }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { boxWidth: 10, font: { size: 10 } }
+                    }
+                }
+            }
+        });
+
+        const defaultSchedules = {
+            balanced: [
+                { time: '06:30 AM', title: 'Circadian Sunlight & Hydration Wave', tag: 'LONGEVITY', desc: 'Triggers cortisol release spike naturally. 15 min light spectrum exposure.', color: 'emerald' },
+                { time: '08:00 AM', title: 'Deep Work Block // High Cognitive Capacity', tag: 'PRODUCTIVITY', desc: 'Quantum engine silences notifications & auto-routes low-priority emails.', color: 'indigo' },
+                { time: '12:30 PM', title: 'Glucose-Optimized Fuel & Micro-Rest', tag: 'WELL-BEING', desc: 'Targeted nutrition window to prevent afternoon metabolic slump.', color: 'amber' },
+                { time: '03:00 PM', title: 'Collaborative Sync & Market Execution', tag: 'WEALTH', desc: 'Automated portfolio rebalancing based on live probability vectors.', color: 'cyan' },
+                { time: '09:30 PM', title: 'Melatonin Phase Lock Protocol', tag: 'RECOVERY', desc: 'Smart home lighting shifts to 1800K warm spectrum for restorative sleep.', color: 'purple' }
+            ],
+            longevity: [
+                { time: '06:00 AM', title: 'Zone 2 Cardio & Autophagy Activation', tag: 'LONGEVITY', desc: '60 min mitochondrial stimulation at 125 BPM optimal heart rate.', color: 'emerald' },
+                { time: '09:00 AM', title: 'Focused Cognitive Sprint', tag: 'PRODUCTIVITY', desc: 'High mental output aligned with peak brain-derived neurotrophic factor.', color: 'indigo' },
+                { time: '01:00 PM', title: 'Hyperbaric & Cold Shock Therapy', tag: 'RECOVERY', desc: 'Accelerates cellular repair and reduces systemic inflammation.', color: 'cyan' },
+                { time: '08:00 PM', title: 'Digital Sunset & Infrared Sauna', tag: 'LONGEVITY', desc: 'Parasympathetic nervous system dominant state engaged.', color: 'emerald' }
+            ],
+            efficiency: [
+                { time: '05:30 AM', title: 'Asynchronous Task Dispatch', tag: 'PRODUCTIVITY', desc: 'AI agents deploy morning workflows before global market opens.', color: 'indigo' },
+                { time: '07:30 AM', title: 'Hyper-Focus Code & Strategy Block', tag: 'WEALTH', desc: 'Zero interruptions, zero context-switching environment.', color: 'cyan' },
+                { time: '01:00 PM', title: 'High-Leverage Strategic Calls', tag: 'PRODUCTIVITY', desc: 'Compressed decision-making block under peak focus metrics.', color: 'indigo' },
+                { time: '05:00 PM', title: 'Automated Yield Audit & Close', tag: 'WEALTH', desc: 'Review calculated time savings and portfolio capital reallocation.', color: 'amber' }
+            ],
+            joy: [
+                { time: '07:30 AM', title: 'Gentle Awakening & Mindfulness Flow', tag: 'WELL-BEING', desc: 'Zero alarm start. Dopamine system baseline restoration.', color: 'amber' },
+                { time: '10:00 AM', title: 'Creative Exploration & Flow State', tag: 'CREATIVITY', desc: 'Unstructured time for deep intellectual or artistic passion projects.', color: 'purple' },
+                { time: '02:30 PM', title: 'Social Connection & Nature Walk', tag: 'WELL-BEING', desc: 'Oxytocin boost via face-to-face interaction and outdoor immersion.', color: 'emerald' },
+                { time: '07:00 PM', title: 'Culinary Experience & Rest', tag: 'JOY', desc: 'Unwind with nutrient-dense dining and leisure.', color: 'amber' }
+            ]
+        };
+
+        function renderSchedule() {
+            const container = document.getElementById('scheduleTimeline');
+            container.innerHTML = '';
+            
+            const selected = defaultSchedules[state.priority] || defaultSchedules.balanced;
+            
+            selected.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'flex items-start space-x-4 p-3.5 bg-white/80 rounded-xl border border-slate-200/70 hover:border-indigo-300 transition';
+                
+                let badgeClass = 'bg-slate-100 text-slate-700';
+                if (item.color === 'emerald') badgeClass = 'bg-emerald-100 text-emerald-800';
+                if (item.color === 'indigo') badgeClass = 'bg-indigo-100 text-indigo-800';
+                if (item.color === 'amber') badgeClass = 'bg-amber-100 text-amber-800';
+                if (item.color === 'cyan') badgeClass = 'bg-cyan-100 text-cyan-800';
+                if (item.color === 'purple') badgeClass = 'bg-purple-100 text-purple-800';
+
+                div.innerHTML = `
+                    <div class="font-mono text-xs font-bold text-slate-500 w-16 pt-0.5">${item.time}</div>
+                    <div class="flex-grow">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-xs font-bold text-slate-900">${item.title}</h4>
+                            <span class="text-[10px] font-mono px-2 py-0.5 rounded font-bold ${badgeClass}">${item.tag}</span>
+                        </div>
+                        <p class="text-[11px] text-slate-500 mt-1">${item.desc}</p>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+        renderSchedule();
+
+        btnCollapse.addEventListener('click', () => {
+            const overlay = document.getElementById('canvasOverlay');
+            overlay.classList.remove('opacity-0');
+            overlay.classList.add('opacity-100');
+            btnCollapse.disabled = true;
+            btnCollapse.classList.add('opacity-75');
+
+            setTimeout(() => {
+                overlay.classList.remove('opacity-100');
+                overlay.classList.add('opacity-0');
+                btnCollapse.disabled = false;
+                btnCollapse.classList.remove('opacity-75');
+
+                isCollapsedVisual = true;
+                state.collapsed = true;
+                document.getElementById('simState').textContent = 'EIGENSTATE COLLAPSED';
+                document.getElementById('simState').className = 'text-xs font-mono px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold';
+
+                const effBoost = (state.energy * 0.2 + state.focus * 0.25).toFixed(1);
+                const longRating = (state.energy * 0.7 + 30).toFixed(1);
+                const joyScore = Math.min(99, Math.floor(state.focus * 0.5 + state.energy * 0.4 + 20));
+                const timeRecap = (state.time * 0.18).toFixed(1);
+
+                document.getElementById('kpiEfficiency').textContent = `+${effBoost}%`;
+                document.getElementById('kpiLongevity').textContent = longRating;
+                document.getElementById('kpiJoy').textContent = `${joyScore}/100`;
+                document.getElementById('kpiTimeSaved').textContent = `${timeRecap} hrs`;
+
+                const mult = state.energy / 100;
+                radarChart.data.datasets[1].data = [
+                    Math.floor(85 * mult + 15),
+                    Math.floor(90 * (state.focus / 100) + 10),
+                    Math.floor(88 * mult + 10),
+                    Math.floor(92 * (state.focus / 100) + 5),
+                    Math.floor(87 * mult + 12),
+                    Math.floor(94 * mult + 5)
+                ];
+                radarChart.update();
+
+                lineChart.data.datasets[1].data = [
+                    Math.floor(65 * mult + 15),
+                    Math.floor(95 * (state.focus / 100)),
+                    Math.floor(85 * mult + 10),
+                    Math.floor(92 * (state.focus / 100)),
+                    Math.floor(80 * mult + 10),
+                    Math.floor(70 * mult + 5),
+                    Math.floor(88 * mult + 10)
+                ];
+                lineChart.update();
+
+                renderSchedule();
+
+                document.getElementById('entropyVal').textContent = '0.000 S/kB';
+                document.getElementById('decoherenceVal').textContent = 'COLLAPSED';
+                document.getElementById('microYield').textContent = `$${(effBoost * 0.45).toFixed(2)}/day`;
+
+            }, 900);
+        });
+
+        btnRotateKeys.addEventListener('click', () => {
+            const hex = '0123456789ABCDEF';
+            let key = '0x';
+            for (let i = 0; i < 8; i++) key += hex[Math.floor(Math.random() * 16)];
+            key += '...';
+            for (let i = 0; i < 4; i++) key += hex[Math.floor(Math.random() * 16)];
+            
+            document.getElementById('latticeKey').textContent = key;
+            const vault = document.getElementById('vaultStatus');
+            vault.textContent = 'RE-KEYED OK';
+            vault.className = 'font-mono text-emerald-400 font-semibold';
+            
+            setTimeout(() => {
+                vault.textContent = 'LATTICE-ENCRYPTED';
+                vault.className = 'font-mono text-cyan-300 font-semibold';
+            }, 1500);
+        });
+
+        // Trigger Emergency Event
+        btnTriggerEmergency.addEventListener('click', () => {
+            emergencyModal.classList.remove('hidden');
+            emergencyModal.classList.add('flex');
+            
+            // Crash the visual metrics
+            if(state.collapsed) {
+                lineChart.data.datasets[1].data = [15, 10, 5, 8, 5, 2, 5];
+                lineChart.data.datasets[1].borderColor = '#ef4444';
+                lineChart.data.datasets[1].backgroundColor = 'rgba(239, 68, 68, 0.15)';
+                lineChart.update();
+                
+                radarChart.data.datasets[1].data = [15, 10, 12, 8, 10, 5];
+                radarChart.data.datasets[1].borderColor = '#ef4444';
+                radarChart.data.datasets[1].backgroundColor = 'rgba(239, 68, 68, 0.3)';
+                radarChart.update();
+
+                document.getElementById('kpiEfficiency').textContent = "CRASH";
+                document.getElementById('kpiEfficiency').classList.replace('text-slate-900', 'text-red-600');
+            }
+        });
+
+        // Resolve Emergency Event
+        btnResolveEmergency.addEventListener('click', () => {
+            emergencyModal.classList.add('hidden');
+            emergencyModal.classList.remove('flex');
+            
+            // Restore chart styling
+            lineChart.data.datasets[1].borderColor = '#6366f1';
+            lineChart.data.datasets[1].backgroundColor = 'rgba(99, 102, 241, 0.1)';
+            
+            radarChart.data.datasets[1].borderColor = '#06b6d4';
+            radarChart.data.datasets[1].backgroundColor = 'rgba(6, 182, 212, 0.25)';
+
+            document.getElementById('kpiEfficiency').classList.replace('text-red-600', 'text-slate-900');
+            
+            // Force a system reboot / re-collapse if the timeline was already collapsed
+            if (state.collapsed) {
+                btnCollapse.click(); 
+            } else {
+                lineChart.update();
+                radarChart.update();
+            }
+        });
+    </script>
+</body>
+</html>
